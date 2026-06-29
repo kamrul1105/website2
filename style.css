@@ -1,0 +1,631 @@
+/* ══════════════════════════════════════════════════════════
+   ROMANTIC DATE WEBSITE — style.css
+   Mobile-first • Soft pinks • Smooth animations
+   ══════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────
+   CSS CUSTOM PROPERTIES (Design Tokens)
+   ───────────────────────────────────────── */
+:root {
+  --color-bg:         #FFF0F3;   /* blush white background */
+  --color-surface:    #FFFFFF;   /* card surface */
+  --color-rose:       #E8506A;   /* primary accent — rose red */
+  --color-petal:      #FFB3C1;   /* petal pink — buttons, borders */
+  --color-coral:      #FF7096;   /* coral rose — hover states */
+  --color-text:       #3D1A22;   /* deep plum — body text */
+  --color-muted:      #B07080;   /* muted rose — labels */
+  --color-yes:        #E8506A;
+  --color-no:         #D4D4D4;
+  --color-no-text:    #888;
+  --shadow:           0 8px 32px rgba(232, 80, 106, 0.15);
+  --shadow-card:      0 4px 24px rgba(232, 80, 106, 0.12);
+  --radius-card:      24px;
+  --radius-btn:       50px;
+  --font-display:     Georgia, 'Times New Roman', serif;
+  --font-body:        -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --transition:       0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─────────────────────────────────────────
+   DARK MODE TOKENS
+   ───────────────────────────────────────── */
+body.dark {
+  --color-bg:       #1A0A0D;
+  --color-surface:  #2B1219;
+  --color-rose:     #FF6B87;
+  --color-petal:    #8B3A50;
+  --color-coral:    #FF8FAA;
+  --color-text:     #FFD6DE;
+  --color-muted:    #C090A0;
+  --color-no:       #3A2A2D;
+  --color-no-text:  #A08090;
+  --shadow:         0 8px 32px rgba(255, 107, 135, 0.20);
+  --shadow-card:    0 4px 24px rgba(255, 107, 135, 0.15);
+}
+
+/* ─────────────────────────────────────────
+   RESET & BASE
+   ───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* Hide everything while loading */
+body.loading .screen { opacity: 0; }
+
+/* ─────────────────────────────────────────
+   FLOATING HEARTS CANVAS
+   ───────────────────────────────────────── */
+#heartsCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─────────────────────────────────────────
+   LOADER
+   ───────────────────────────────────────── */
+.loader-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loader-wrap.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-heart {
+  width: 80px;
+  animation: loaderPulse 0.8s ease-in-out infinite alternate;
+}
+
+.loader-heart svg path {
+  fill: var(--color-rose);
+}
+
+.loader-text {
+  font-family: var(--font-display);
+  color: var(--color-muted);
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+}
+
+@keyframes loaderPulse {
+  from { transform: scale(0.85); opacity: 0.7; }
+  to   { transform: scale(1.15); opacity: 1; }
+}
+
+/* ─────────────────────────────────────────
+   ICON BUTTONS (dark mode, music)
+   ───────────────────────────────────────── */
+.icon-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--color-petal);
+  background: var(--color-surface);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, background var(--transition), border-color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.icon-btn:active { transform: scale(0.9); }
+.icon-btn:hover  { transform: scale(1.08); }
+
+.music-btn {
+  right: 68px; /* sits left of dark toggle */
+}
+
+/* ─────────────────────────────────────────
+   SCREENS
+   ───────────────────────────────────────── */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  z-index: 1;
+  /* Hidden by default */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ─────────────────────────────────────────
+   CARD
+   ───────────────────────────────────────── */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 36px 28px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--color-petal);
+  position: relative;
+  z-index: 2;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+/* ─────────────────────────────────────────
+   SCREEN 1 — INTRO
+   ───────────────────────────────────────── */
+.intro-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.intro-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  color: var(--color-rose);
+  margin-bottom: 14px;
+  min-height: 2.6rem;
+  font-style: italic;
+}
+
+.intro-sub {
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
+  color: var(--color-muted);
+  margin-bottom: 32px;
+  min-height: 1.5rem;
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────
+   TYPEWRITER CURSOR
+   ───────────────────────────────────────── */
+.typing::after {
+  content: '|';
+  animation: blink 0.7s step-end infinite;
+  color: var(--color-rose);
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ─────────────────────────────────────────
+   BUTTONS
+   ───────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 32px;
+  border-radius: var(--radius-btn);
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Primary (rose) */
+.btn-primary {
+  background: var(--color-rose);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(232, 80, 106, 0.35);
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:not(:disabled):hover  { background: var(--color-coral); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232, 80, 106, 0.4); }
+.btn-primary:not(:disabled):active { transform: scale(0.96); }
+
+/* YES button */
+.btn-yes {
+  background: var(--color-rose);
+  color: #fff;
+  font-size: 1.15rem;
+  padding: 16px 44px;
+  box-shadow: 0 6px 22px rgba(232, 80, 106, 0.38);
+  transition: transform 0.25s ease, font-size 0.4s ease, padding 0.4s ease, box-shadow 0.2s ease;
+}
+
+.btn-yes:hover  { background: var(--color-coral); transform: scale(1.06); }
+.btn-yes:active { transform: scale(0.96); }
+
+/* NO button — floats freely */
+.btn-no {
+  position: fixed;
+  background: var(--color-no);
+  color: var(--color-no-text);
+  font-size: 0.9rem;
+  padding: 12px 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  z-index: 50;
+}
+
+.btn-no:hover { background: #C8C8C8; }
+
+/* Bounce animation on btn-group */
+.btn-group {
+  display: flex;
+  justify-content: center;
+}
+
+/* ─────────────────────────────────────────
+   SCREEN 2 — QUESTION
+   ───────────────────────────────────────── */
+.question-card {
+  padding-bottom: 40px;
+}
+
+.question-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  color: var(--color-rose);
+  margin-bottom: 24px;
+  line-height: 1.3;
+  font-style: italic;
+}
+
+.funny-msg {
+  font-size: 1rem;
+  color: var(--color-coral);
+  min-height: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ─────────────────────────────────────────
+   SCREEN 3 — YES / CONFETTI
+   ───────────────────────────────────────── */
+#confettiCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.yes-card { z-index: 2; }
+
+.yay-emoji {
+  font-size: 4rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.yay-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  color: var(--color-rose);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.yay-sub {
+  color: var(--color-muted);
+  margin-bottom: 28px;
+  font-size: 1rem;
+}
+
+/* ─────────────────────────────────────────
+   SCREEN 4 — DATE PICKER
+   ───────────────────────────────────────── */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+  color: var(--color-rose);
+  margin-bottom: 28px;
+  font-style: italic;
+}
+
+.field-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+.field-input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--color-petal);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background var(--transition);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.field-input:focus {
+  border-color: var(--color-rose);
+  box-shadow: 0 0 0 3px rgba(232, 80, 106, 0.15);
+}
+
+/* date/time input colorscheme */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(40%) sepia(80%) saturate(500%) hue-rotate(310deg);
+  cursor: pointer;
+}
+
+.date-card .btn-primary { margin-top: 10px; width: 100%; }
+
+/* ─────────────────────────────────────────
+   SCREEN 5 — PLACE PICKER
+   ───────────────────────────────────────── */
+.place-card {
+  max-width: 520px;
+  overflow-y: auto;
+  max-height: calc(100dvh - 60px);
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.place-card-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 8px;
+  border-radius: 16px;
+  border: 2px solid var(--color-petal);
+  background: var(--color-bg);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 90px;
+}
+
+.place-card-item:active { transform: scale(0.94); }
+
+.place-card-item.selected {
+  border-color: var(--color-rose);
+  background: rgba(232, 80, 106, 0.08);
+  box-shadow: 0 0 0 3px rgba(232, 80, 106, 0.18);
+}
+
+.place-emoji { font-size: 1.7rem; }
+.place-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.place-card-item.selected .place-label { color: var(--color-rose); }
+
+.place-card .btn-primary { width: 100%; }
+
+/* ─────────────────────────────────────────
+   SCREEN 6 — FINAL
+   ───────────────────────────────────────── */
+.final-heart-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.final-heart {
+  width: 64px;
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+
+.final-heart path { fill: var(--color-rose); }
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.18); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.12); }
+  70%       { transform: scale(1); }
+}
+
+.final-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.2rem);
+  color: var(--color-rose);
+  margin-bottom: 22px;
+  font-style: italic;
+}
+
+.summary-box {
+  background: var(--color-bg);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border: 1.5px solid var(--color-petal);
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-petal);
+}
+
+.summary-row:last-child { border-bottom: none; }
+
+.summary-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.summary-val {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.final-msg {
+  font-size: 1rem;
+  color: var(--color-muted);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.final-love {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-rose);
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* ─────────────────────────────────────────
+   SHARED ANIMATIONS
+   ───────────────────────────────────────── */
+
+/* Gentle entrance bounce for buttons */
+@keyframes bounceIn {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  80%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.bounce-btn {
+  animation: bounceIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Pulsing heart */
+.pulse-anim {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}
+
+/* Big bounce for celebration */
+@keyframes bounceBig {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-20px); }
+  70%       { transform: translateY(-10px); }
+}
+
+.bounce-big {
+  animation: bounceBig 1s ease-in-out infinite;
+}
+
+/* NO button slide/move animation */
+.btn-no.moving {
+  transition: left 0.35s cubic-bezier(0.34, 1.3, 0.64, 1),
+              top  0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+/* Fade in utility */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ─────────────────────────────────────────
+   RESPONSIVE — DESKTOP UPGRADES
+   ───────────────────────────────────────── */
+@media (min-width: 600px) {
+  .card { padding: 48px 44px; }
+
+  .places-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .place-card-item { padding: 18px 10px; min-height: 100px; }
+  .place-emoji { font-size: 2rem; }
+  .place-label { font-size: 0.8rem; }
+}
+
+/* ─────────────────────────────────────────
+   REDUCED MOTION ACCESSIBILITY
+   ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
